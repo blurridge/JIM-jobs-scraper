@@ -2,7 +2,6 @@ import os
 import datetime as dt
 import logging
 from pathlib import Path
-import sys
 
 def create_db_dir():
     """
