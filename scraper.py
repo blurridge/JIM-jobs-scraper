@@ -23,7 +23,16 @@ def csv_file_exists():
 
 def extract_site(site: str, skill_name: str, location="Cebu", indeed_no_page=0):
     """
-    Extracts the html from the requested site.
+    Extracts the HTML from the requested site.
+
+    Parameters:
+    - site (str): The website to extract data from.
+    - skill_name (str): The skill or job title to search for.
+    - location (str): The location where the job search should be conducted. Defaults to "Cebu".
+    - indeed_no_page (int): The number of pages to scrape. If set to 0, scrapes only first page. Defaults to 0.
+
+    Returns:
+    - soup (BeautifulSoup): The BeautifulSoup object containing the parsed HTML.
     """
     options = Options()
     driver = webdriver.Chrome(options=options)
@@ -34,7 +43,23 @@ def extract_site(site: str, skill_name: str, location="Cebu", indeed_no_page=0):
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     return soup
 
-def scrape_indeed(skill_name="Data Analyst", location="Cebu", no_pages=0):
+def scrape_indeed(skill_name: str, location="Cebu", no_pages=0):
+    """
+    Scrapes job postings from Indeed for a specific skill and location, and writes the data to a CSV file.
+
+    Parameters:
+    - skill_name (str): The skill or job title to search for.
+    - location (str): The location where the job search should be conducted. Defaults to "Cebu".
+    - no_pages (int): The number of pages to scrape. If set to 0, scrapes only first page. Defaults to 0.
+
+    Returns:
+    - None
+
+    This function scrapes job postings from Indeed based on the provided skill_name and location.
+    It writes the extracted data to a CSV file named 'indeed_jobs.csv' in the job_db directory.
+    Each job posting is represented as a dictionary containing 'job_id', 'job_name',
+    'company_name', 'job_location', and 'job_link' keys.
+    """
     soup = extract_site(site="indeed", skill_name=skill_name, location=location, indeed_no_page=no_pages)
     job_cards_div = soup.find('div', attrs={'id': 'mosaic-provider-jobcards'})
     if job_cards_div:
