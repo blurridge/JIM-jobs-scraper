@@ -14,7 +14,7 @@ def main(
     if site == "indeed":
         scrape_indeed(skill_name=skill_name, location=location, num_pages=num_pages)
     else:
-        print("Not yet implemented.")
+        scrape_mynimo(skill_name=skill_name, location=location, num_pages=num_pages)
 
 
 if __name__ == "__main__":
