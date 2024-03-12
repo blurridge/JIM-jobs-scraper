@@ -5,11 +5,19 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pathlib import Path
 
+# TODO: Check if pages repeat. If it repeats, stop scraping.
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
 }
-URLS = {"indeed": "https://ph.indeed.com/jobs", "mynimo": "https://www.mynimo.com/cebu-jobs"}
-DB = {"indeed": "job_db/scraped_indeed_jobs.csv", "mynimo": "job_db/scraped_mynimo_jobs.csv"}
+URLS = {
+    "indeed": "https://ph.indeed.com/jobs",
+    "mynimo": "https://www.mynimo.com/cebu-jobs",
+}
+DB = {
+    "indeed": "job_db/scraped_indeed_jobs.csv",
+    "mynimo": "job_db/scraped_mynimo_jobs.csv",
+}
 FIELD_NAMES = ["job_id", "job_name", "company_name", "job_location", "job_link"]
 log = logging.getLogger(__name__)
 
@@ -43,7 +51,10 @@ def extract_site(site: str, skill_name: str, location="Cebu", num_page=0):
             + f"?q={skill_name.replace(' ', '+')}&l={location}&start={num_page * 10}"
         )
     elif site == "mynimo":
-        url = URLS[site] + f"search?page={num_page}&search_by=content&keyword={skill_name.replace(' ', '%20')}&region_name=cebu&category_name_pretty=&searchType="
+        url = (
+            URLS[site]
+            + f"search?page={num_page}&search_by=content&keyword={skill_name.replace(' ', '%20')}&region_name=cebu&category_name_pretty=&searchType="
+        )
     log.info(
         f"Scraping {site.title()} for {skill_name.title()} in {location.title()} [Page #{num_page + 1}]"
     )
@@ -112,12 +123,16 @@ def scrape_indeed(skill_name: str, location="Cebu", num_pages=1):
         else:
             log.error("No jobs found.")
 
+
 def scrape_mynimo(skill_name: str, location="Cebu", num_pages=1):
     for page in range(0, num_pages):
         soup = extract_site(
             site="mynimo", skill_name=skill_name, location=location, num_page=page
         )
-        job_cards_div = soup.find("div", attrs={"data-chakra-component": "CStack", "class": "css-j7qwjs css-0"})
+        job_cards_div = soup.find(
+            "div",
+            attrs={"data-chakra-component": "CStack", "class": "css-j7qwjs css-0"},
+        )
         if job_cards_div:
             log.info("Job found. Scraping attributes...")
             if not csv_file_exists("mynimo"):
@@ -127,18 +142,29 @@ def scrape_mynimo(skill_name: str, location="Cebu", num_pages=1):
                     csv_writer.writeheader()
             with open(DB["mynimo"], "a") as mynimo_file:
                 jobs = job_cards_div.find_all(
-                    "a", attrs={"data-chakra-component": "CPseudoBox", "class": "href-button css-h9szfi"}
+                    "a",
+                    attrs={
+                        "data-chakra-component": "CPseudoBox",
+                        "class": "href-button css-h9szfi",
+                    },
                 )
                 for job in jobs:
-                    job_id = job['href'].split('/')[3] 
+                    job_id = job["href"].split("/")[3]
                     job_name = job.find(
-                        "p", attrs={"data-chakra-component": "CText", "class": "href-button css-qkcbob"}
+                        "p",
+                        attrs={
+                            "data-chakra-component": "CText",
+                            "class": "href-button css-qkcbob",
+                        },
                     ).text.strip()
-                    company_name = job.find(
-                        "h5", attrs={"class": "company-name-text"}
-                    ).contents[-1].strip()
+                    company_name = (
+                        job.find("h5", attrs={"class": "company-name-text"})
+                        .contents[-1]
+                        .strip()
+                    )
                     job_location = job.find(
-                        "p", attrs={"data-chakra-component": "CText", "class": "css-6of238"}
+                        "p",
+                        attrs={"data-chakra-component": "CText", "class": "css-6of238"},
                     ).text.strip()
                     job_link = f"https://www.mynimo.com/jobs/view/" + job_id
                     job_payload = {
