@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 
 
-def create_db_dir():
+def create_db_dir() -> None:
     """
     Creates database directory for scraped jobs.
     """
@@ -14,7 +14,7 @@ def create_db_dir():
         print("Job database directory created successfully.")
 
 
-def create_log_dir():
+def create_log_dir() -> None:
     """
     Sets up logging file for the scraper.
     """
