@@ -279,6 +279,7 @@ def scrape_mynimo(skill_name: str, location="Cebu", num_pages=1) -> None:
         else:
             log.error("No jobs found.")
 
+
 def scrape_jobstreet(skill_name: str, location="Cebu", num_pages=1) -> None:
     """
     Scrapes job listings from Mynimo website based on provided parameters.
@@ -306,16 +307,26 @@ def scrape_jobstreet(skill_name: str, location="Cebu", num_pages=1) -> None:
         soup = extract_site(
             site="jobstreet", skill_name=skill_name, location=location, num_page=page
         )
-        jobs = soup.find_all("div", attrs={'data-search-sol-meta': True})
+        jobs = soup.find_all("div", attrs={"data-search-sol-meta": True})
         if jobs:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
             with open(DB["jobstreet"], "a") as jobstreet_file:
                 for job in jobs:
-                    job_id = job.find("a", attrs={"data-automation": "jobTitle"})["id"].split('-')[-1].strip()
-                    job_name = job.find("a", attrs={"data-automation": "jobTitle"}).text.strip()
-                    company_name = job.find("a", attrs={"data-automation": "jobCompany"}).text.strip()
-                    job_location = job.find("a", attrs={"data-automation": "jobLocation"}).text.strip()
+                    job_id = (
+                        job.find("a", attrs={"data-automation": "jobTitle"})["id"]
+                        .split("-")[-1]
+                        .strip()
+                    )
+                    job_name = job.find(
+                        "a", attrs={"data-automation": "jobTitle"}
+                    ).text.strip()
+                    company_name = job.find(
+                        "a", attrs={"data-automation": "jobCompany"}
+                    ).text.strip()
+                    job_location = job.find(
+                        "a", attrs={"data-automation": "jobLocation"}
+                    ).text.strip()
                     job_link = f"https://www.jobstreet.com.ph/job/{job_id}"
                     job_payload = {
                         "job_id": job_id,
@@ -327,7 +338,9 @@ def scrape_jobstreet(skill_name: str, location="Cebu", num_pages=1) -> None:
                     if job_id not in existing_job_ids:
                         existing_job_ids.add(job_id)
                         log.info(f"Adding {job_id} by {company_name} to dataset...")
-                        csv_writer = csv.DictWriter(jobstreet_file, fieldnames=FIELD_NAMES)
+                        csv_writer = csv.DictWriter(
+                            jobstreet_file, fieldnames=FIELD_NAMES
+                        )
                         csv_writer.writerow(job_payload)
             if prev_set_len == len(existing_job_ids) and existing_job_ids:
                 log.error(
