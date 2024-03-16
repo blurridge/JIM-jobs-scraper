@@ -18,7 +18,7 @@ DB = {
     "mynimo": "job_db/scraped_mynimo_jobs.csv",
     "jobstreet": "job_db/scraped_jobstreet_jobs.csv",
 }
-FIELD_NAMES = ["job_id", "job_name", "company_name", "job_location", "job_link"]
+FIELD_NAMES = ["job_id", "job_name", "company_name", "job_location", "job_link", "query"]
 MAX_RETRIES = 3
 log = logging.getLogger(__name__)
 
@@ -171,6 +171,7 @@ def scrape_indeed(skill_name: str, location="Cebu", num_pages=1) -> None:
                             "company_name": company_name,
                             "job_location": job_location,
                             "job_link": job_link,
+                            "query": skill_name,
                         }
                         if job_id not in existing_job_ids:
                             existing_job_ids.add(job_id)
@@ -260,6 +261,7 @@ def scrape_mynimo(skill_name: str, location="Cebu", num_pages=1) -> None:
                         "company_name": company_name,
                         "job_location": job_location,
                         "job_link": job_link,
+                        "query": skill_name,
                     }
                     if job_id not in existing_job_ids:
                         existing_job_ids.add(job_id)
@@ -334,6 +336,7 @@ def scrape_jobstreet(skill_name: str, location="Cebu", num_pages=1) -> None:
                         "company_name": company_name,
                         "job_location": job_location,
                         "job_link": job_link,
+                        "query": skill_name,
                     }
                     if job_id not in existing_job_ids:
                         existing_job_ids.add(job_id)
