@@ -147,7 +147,7 @@ def scrape_indeed(skill_name: str, location="Cebu", num_pages=1) -> None:
         if job_cards_div:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
-            with open(DB["indeed"], "a") as indeed_file:
+            with open(DB["indeed"], "a", newline='') as indeed_file:
                 jobs = job_cards_div.find_all(
                     "li", attrs={"class": "css-5lfssm eu4oa1w0"}
                 )
@@ -228,7 +228,7 @@ def scrape_mynimo(skill_name: str, location="Cebu", num_pages=1) -> None:
         if job_cards_div:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
-            with open(DB["mynimo"], "a") as mynimo_file:
+            with open(DB["mynimo"], "a", newline='') as mynimo_file:
                 jobs = job_cards_div.find_all(
                     "a",
                     attrs={
@@ -313,7 +313,7 @@ def scrape_jobstreet(skill_name: str, location="Cebu", num_pages=1) -> None:
         if jobs:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
-            with open(DB["jobstreet"], "a") as jobstreet_file:
+            with open(DB["jobstreet"], "a", newline='') as jobstreet_file:
                 for job in jobs:
                     job_id = (
                         job.find("a", attrs={"data-automation": "jobTitle"})["id"]
