@@ -149,7 +149,7 @@ def scrape_indeed(skill_name: str, location="Cebu", num_pages=1) -> None:
             prev_set_len = len(existing_job_ids)
             with open(DB["indeed"], "a", newline='') as indeed_file:
                 jobs = job_cards_div.find_all(
-                    "li", attrs={"class": "css-5lfssm eu4oa1w0"}
+                    "li", attrs={"class": "css-1ac2h1w eu4oa1w0"}
                 )
                 for job in jobs:
                     job_div = job.find("div", attrs={"class": "cardOutline"})
