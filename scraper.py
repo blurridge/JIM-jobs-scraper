@@ -18,7 +18,14 @@ DB = {
     "mynimo": "job_db/scraped_mynimo_jobs.csv",
     "jobstreet": "job_db/scraped_jobstreet_jobs.csv",
 }
-FIELD_NAMES = ["job_id", "job_name", "company_name", "job_location", "job_link", "query"]
+FIELD_NAMES = [
+    "job_id",
+    "job_name",
+    "company_name",
+    "job_location",
+    "job_link",
+    "query",
+]
 MAX_RETRIES = 3
 log = logging.getLogger(__name__)
 
@@ -147,7 +154,7 @@ def scrape_indeed(skill_name: str, location="Cebu", num_pages=1) -> None:
         if job_cards_div:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
-            with open(DB["indeed"], "a", newline='') as indeed_file:
+            with open(DB["indeed"], "a", newline="") as indeed_file:
                 jobs = job_cards_div.find_all(
                     "li", attrs={"class": "css-1ac2h1w eu4oa1w0"}
                 )
@@ -228,7 +235,7 @@ def scrape_mynimo(skill_name: str, location="Cebu", num_pages=1) -> None:
         if job_cards_div:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
-            with open(DB["mynimo"], "a", newline='') as mynimo_file:
+            with open(DB["mynimo"], "a", newline="") as mynimo_file:
                 jobs = job_cards_div.find_all(
                     "a",
                     attrs={
@@ -313,7 +320,7 @@ def scrape_jobstreet(skill_name: str, location="Cebu", num_pages=1) -> None:
         if jobs:
             log.info("Jobs found. Scraping attributes...")
             prev_set_len = len(existing_job_ids)
-            with open(DB["jobstreet"], "a", newline='') as jobstreet_file:
+            with open(DB["jobstreet"], "a", newline="") as jobstreet_file:
                 for job in jobs:
                     job_id = (
                         job.find("a", attrs={"data-automation": "jobTitle"})["id"]
