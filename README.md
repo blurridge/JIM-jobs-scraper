@@ -24,6 +24,11 @@ Install dependencies
   pip install -r requirements.txt
 ```
 
+Install Chrome for Testing. Ensure you have node installed and have the latest version of Chrome.
+```bash
+  npx @puppeteer/browsers install chrome@stable
+```
+
 Start the script
 
 ```bash
